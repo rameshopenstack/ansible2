@@ -1,0 +1,21 @@
+---
+- hosts: all
+  tasks:
+   - name: install package
+     apt: name={{item}} state=present
+     with_items:
+        - memcached
+        - python-memcache
+     when: ansible_os_family == 'Debian'
+   - name:
+     template:
+        src: /etc/memcached.conf.j2
+        dest: /etc/memcached.conf
+    
+    
+     notify: service restart
+  handlers:
+    - name: service restart 
+      service: name=memcached  state=restarted
+      when: ansible_os_family == 'Debian'
+    
